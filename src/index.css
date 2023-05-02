@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+}
+.map-container {
+  height: 95vh;
+  width: 78vw;
+}
+.title {
+  text-align: center;
+}
+.selectOption {
+  display: block;
+  margin: 0 auto;
+}
+#messages {
+  height: 75vh;
+  width: 18vw;
+  overflow-y: auto;
+}
