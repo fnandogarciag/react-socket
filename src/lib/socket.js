@@ -1,10 +1,13 @@
 import { io } from "socket.io-client";
+import Config from "../config";
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.REACT_APP_SOCKET_URL ?? "http://localhost:3000";
+const URL = Config.socketUrl;
 
-export const socket = io(URL, {
+const socket = io(URL, {
   query: {
     id: 1,
   },
 });
+
+export { socket };
