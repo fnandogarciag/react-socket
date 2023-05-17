@@ -1,8 +1,5 @@
-import {
-  useGoogleMap,
-  useGeocodingService,
-} from "@ubilabs/google-maps-react-hooks";
-import { useEffect, useState } from "react";
+import { useGoogleMap } from '@ubilabs/google-maps-react-hooks';
+import { useEffect } from 'react';
 
 const CustomMarker = ({
   marker,
@@ -17,16 +14,16 @@ const CustomMarker = ({
     if (!markerClusterer) if (!map) return;
     const markerOptions = {
       position: {
-        lat: marker.latRef,
-        lng: marker.longRef,
+        lat: marker.lat,
+        lng: marker.lng,
       },
       title: message,
       label: !countable
         ? null
         : {
             text: countable,
-            color: "white",
-            fontSize: "16px",
+            color: 'white',
+            fontSize: '16px',
           },
       icon: !color
         ? null
@@ -35,16 +32,15 @@ const CustomMarker = ({
             fillColor: color,
             fillOpacity: 1,
             strokeWeight: 0,
-            scale: 18,
+            scale: 9 + `${countable}`.length * 3,
           },
     };
-
     const newMarkerElement = new window.google.maps.Marker(markerOptions);
     let infoWindowState = false;
     if (message) {
       const newInfoWindow = new window.google.maps.InfoWindow({});
       newInfoWindow.setContent(newMarkerElement.getTitle());
-      newMarkerElement.addListener("click", () => {
+      newMarkerElement.addListener('click', () => {
         if (infoWindowState) {
           newInfoWindow.close();
         } else {

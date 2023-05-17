@@ -1,10 +1,10 @@
-import { GoogleMapsProvider } from "@ubilabs/google-maps-react-hooks";
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
+import { GoogleMapsProvider } from '@ubilabs/google-maps-react-hooks';
 
-import Config from "./config";
+import Config from './config';
 
-import GoogleMapsContainer from "./GoogleMapsContainer";
-import ATestRoute from "./ATestRoute";
+import GoogleMapsContainer from './GoogleMapsContainer';
+// import ATestRoute from "./ATestRoute";
 
 const mapOptions = {
   center: Config.initialPosition,

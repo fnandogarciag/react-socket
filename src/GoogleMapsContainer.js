@@ -1,9 +1,9 @@
-import CustomMap from "./components/CustomMap";
-import useMap from "./CustomStates/useMap";
-import CustomMarkerClusterer from "./components/CustomMarkerClusterer";
-import CustomMarker from "./components/CustomMarker";
-import CustomPolyline from "./components/CustomPolyline";
-import Config from "./config";
+import CustomMap from './components/CustomMap';
+import useMap from './CustomStates/useMap';
+import CustomMarkerClusterer from './components/CustomMarkerClusterer';
+import CustomMarker from './components/CustomMarker';
+import CustomPolyline from './components/CustomPolyline';
+import Config from './config';
 
 const POSITIONS = {
   0: { position: Config.initialPosition, zoom: Config.initialZoom },
@@ -21,42 +21,39 @@ const AppGoogleContainer = ({ mapRef }) => {
     messages,
     keyPolyline,
   } = useMap(POSITIONS);
-
+  console.log(showUserList);
   return (
     <div className="container">
       <div id="container">
         <CustomMap ref={mapRef} />
-        {selectedUser === "0" ? (
+        {selectedUser === '0' ? (
           <CustomMarkerClusterer markers={showUserList} />
         ) : (
           <>
-            {[...showUserList].map((user) => (
-              <CustomMarker
-                key={user.id}
-                marker={user}
-                message={`Name:${user.nameUsuario} Y: ${user.latRef} X: ${user.longRef} Time: ${user.fechaRegistro}`}
-              />
-            ))}
-            {showUserList.length <= 1 ? null : (
-              <CustomPolyline key={`0${keyPolyline}`} points={showUserList} />
-            )}
-            {[...solicitudes].map((solicitud) => {
-              return (
+            {showUserList.length <= 1 ? (
+              [...showUserList].map((user) => (
                 <CustomMarker
-                  key={solicitud.id}
-                  marker={solicitud}
-                  color="black"
-                  message={`${solicitud.id}`}
-                  countable={`${solicitud.id}`}
+                  key={user.id}
+                  marker={user}
+                  message={`Name:${user.nameUsuario} Y: ${user.lat} X: ${user.lng} Time: ${user.fechaRegistro}`}
                 />
-              );
-            })}
+              ))
+            ) : (
+              <CustomPolyline
+                key={`0${keyPolyline}`}
+                points={showUserList}
+                colorLine="green"
+                colorArrow="black"
+              />
+            )}
             {solicitudes.length <= 1 ? null : (
               <CustomPolyline
                 key={`1${keyPolyline}`}
                 points={solicitudes}
                 optimize={true}
-                color="green"
+                colorLine="blue"
+                colorArrow="red"
+                route={true}
               />
             )}
           </>

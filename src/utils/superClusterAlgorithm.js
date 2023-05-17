@@ -1,4 +1,4 @@
-import { SuperClusterAlgorithm } from "@googlemaps/markerclusterer";
+import { SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
 
 // Temporary fix for https://github.com/googlemaps/js-markerclusterer/pull/419
 export default class BoundingSuperClusterAlgorithm extends SuperClusterAlgorithm {

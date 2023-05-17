@@ -1,9 +1,9 @@
-import { useGoogleMap } from "@ubilabs/google-maps-react-hooks";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useGoogleMap } from '@ubilabs/google-maps-react-hooks';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 
-import SuperClusterAlgorithm from "../utils/superClusterAlgorithm";
-import CustomMarker from "./CustomMarker";
+import SuperClusterAlgorithm from '../utils/superClusterAlgorithm';
+import CustomMarker from './CustomMarker';
 
 const CustomMarkerClusterer = ({ markers }) => {
   const [markerClusterer, setMarkerClusterer] = useState(null);
@@ -14,6 +14,7 @@ const CustomMarkerClusterer = ({ markers }) => {
     const newMarkerClusterer = new MarkerClusterer({
       markers: [],
       map,
+      maxZoom: 26,
       algorithm: new SuperClusterAlgorithm({ radius: 200 }),
     });
     setMarkerClusterer(newMarkerClusterer);
@@ -25,7 +26,7 @@ const CustomMarkerClusterer = ({ markers }) => {
         <CustomMarker
           key={marker.id}
           marker={marker}
-          message={`Name:${marker.nameUsuario} Y: ${marker.latRef} X: ${marker.longRef} Time: ${marker.fechaRegistro}`}
+          message={`Name:${marker.nameUsuario} Y: ${marker.lat} X: ${marker.lng} Time: ${marker.fechaRegistro}`}
           markerClusterer={markerClusterer}
         />
       ))}

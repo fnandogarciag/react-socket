@@ -1,16 +1,25 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from 'react';
 import {
   useDirectionsService,
   useGoogleMap,
-} from "@ubilabs/google-maps-react-hooks";
+} from '@ubilabs/google-maps-react-hooks';
+import CustomMarker from './CustomMarker';
 
-const CustomPolyline = ({ points, optimize = false, color = "#FB2576" }) => {
+const CustomPolyline = ({
+  points,
+  optimize = false,
+  colorLine = 'red',
+  colorArrow = 'black',
+  route = false,
+}) => {
+  const [orderMarkers, setOrderMarkers] = useState([]);
   const map = useGoogleMap();
 
   const directionsOptions = {
     renderOnMap: true,
     renderOptions: {
       suppressMarkers: true,
+      preserveViewport: !route,
     },
   };
 
@@ -19,20 +28,34 @@ const CustomPolyline = ({ points, optimize = false, color = "#FB2576" }) => {
 
   const createRoute = useCallback(
     async (request) => {
-      try {
-        const data = await directionsService.route(request);
-        directionsRenderer.setDirections(data);
-        directionsRenderer.setOptions({
-          polylineOptions: {
-            strokeColor: color,
-            strokeWeight: 4,
-          },
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      const data = await directionsService.route(request);
+      setOrderMarkers(
+        data.routes[0].waypoint_order.map((position, index) => ({
+          arrayPosition: position + 1,
+          orderPosition: index + 1,
+        }))
+      );
+      directionsRenderer.setDirections(data);
+      directionsRenderer.setOptions({
+        polylineOptions: {
+          zIndex: route ? 0 : 1,
+          strokeColor: colorLine,
+          strokeWeight: 4,
+          icons: [
+            {
+              icon: {
+                path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                fillColor: colorArrow,
+                fillOpacity: 1,
+                strokeWeight: 0,
+              },
+              repeat: '50px',
+            },
+          ],
+        },
+      });
     },
-    [color, directionsRenderer, directionsService]
+    [colorArrow, colorLine, directionsRenderer, directionsService, route]
   );
 
   useEffect(() => {
@@ -40,23 +63,27 @@ const CustomPolyline = ({ points, optimize = false, color = "#FB2576" }) => {
       return () => {};
     }
     const waypoints = [];
-    for (let index = 1; index < points.length; index++) {
+    for (
+      let index = 1;
+      index < (route ? points.length : points.length - 1);
+      index++
+    ) {
       waypoints.push({
         location: {
-          lat: points[index]["latRef"],
-          lng: points[index]["longRef"],
+          lat: points[index]['lat'],
+          lng: points[index]['lng'],
         },
       });
     }
     const request = {
       travelMode: window.google.maps.TravelMode.DRIVING,
       origin: {
-        lat: points[0]["latRef"],
-        lng: points[0]["longRef"],
+        lat: points[0]['lat'],
+        lng: points[0]['lng'],
       },
       destination: {
-        lat: points[0]["latRef"],
-        lng: points[0]["longRef"],
+        lat: route ? points[0]['lat'] : points.at(-1)['lat'],
+        lng: route ? points[0]['lng'] : points.at(-1)['lng'],
       },
       drivingOptions: {
         departureTime: new Date(),
@@ -80,9 +107,38 @@ const CustomPolyline = ({ points, optimize = false, color = "#FB2576" }) => {
     map,
     optimize,
     points,
+    route,
   ]);
-
-  return null;
+  return route ? (
+    <>
+      <CustomMarker
+        key={points[0].id}
+        marker={points[0]}
+        color="black"
+        message={`${points[0].direccion}`}
+        countable={`${points[0].id}`}
+      />
+      {[...orderMarkers].map(({ arrayPosition, orderPosition }) => {
+        return (
+          <CustomMarker
+            key={points[arrayPosition].id}
+            marker={points[arrayPosition]}
+            color="black"
+            message={`${points[arrayPosition].direccion}`}
+            countable={`${orderPosition}`}
+          />
+        );
+      })}
+    </>
+  ) : (
+    [...points].map((point) => (
+      <CustomMarker
+        key={point.id}
+        marker={point}
+        message={`Name:${point.nameUsuario} Y: ${point.lat} X: ${point.lng} Time: ${point.fechaRegistro}`}
+      />
+    ))
+  );
 };
 
 export default CustomPolyline;
